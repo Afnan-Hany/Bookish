@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Library.Models.Order>
+
+<h2>Orders List</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Member Name</th>
+            <th>Order Date</th>
+            <th>Status</th>
+            <th>Total Amount</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.Member?.MemberName ?? "Unknown"</td> <!-- Handle null member -->
+                    <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                    <td>@order.OrderStatus</td>
+                    <td>@order.TotalAmount.ToString("C2")</td> <!-- Format as currency -->
+                    <td>
+                        <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-info">Details</a>
+                        <a asp-action="Edit" asp-route-id="@order.OrderId" class="btn btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@order.OrderId" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">No orders found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-controller="Order" asp-action="Create" class="btn btn-primary">Create Order</a>

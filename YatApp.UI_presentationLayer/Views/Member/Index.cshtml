@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Library.Models.Member>
+
+    <h1>Members List</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Membership Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model)
+            {
+                <tr>
+                    <td>@member.MemberName</td>
+                    <td>@member.Email</td>
+                    <td>@member.PhoneNumber</td>
+                    <td>@member.MembershipDate.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@member.MemberId">Details</a> |
+                        <a asp-action="Edit" asp-route-id="@member.MemberId">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@member.MemberId" onclick="return confirm('Are you sure you want to delete this member?');">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    @if (ViewBag.RoleName == "Host")
+    {
+        <a asp-action="Create" class="btn btn-primary">Add New Member</a>
+    }
+
+
+
+
