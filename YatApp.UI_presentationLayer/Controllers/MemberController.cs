@@ -10,9 +10,9 @@ namespace Library.Controllers
 {
     public class MemberController : Controller
     {
-        private readonly LibraryContext _context;
+        private readonly BookishAppDbContext _context;
 
-        public MemberController(LibraryContext context)
+        public MemberController(BookishAppDbContext context)
         {
             _context = context;
         }

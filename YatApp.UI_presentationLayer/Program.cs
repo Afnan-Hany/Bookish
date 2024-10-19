@@ -31,7 +31,7 @@ namespace YatApp.UI_presentationLayer
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=BookRepository}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }
