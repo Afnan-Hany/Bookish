@@ -54,10 +54,11 @@ else
 <h1>Edit Member</h1>
 
 <p>User Role: @ViewBag.UserRole</p> 
+// <input type="hidden" asp-for="MemberId" />//return it in line 61
 @if (userRole == "Member")
 {
     <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="MemberId" />
+          
 
         <div class="form-group">
             <label asp-for="MemberName" class="control-label"></label>

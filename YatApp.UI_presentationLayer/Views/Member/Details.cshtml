@@ -38,12 +38,12 @@
 </div>
 
 <div>
-    @if (ViewBag.UserRole == "Host" ||
+   @*  @if (ViewBag.UserRole == "Host" ||
     (ViewBag.UserRole == "Member" && ViewBag.MemberId.HasValue && Model.MemberId == ViewBag.MemberId.Value))
-    {
-        <a asp-action="Edit" asp-route-id="@Model?.MemberId">Edit</a>
+    { *@
+       @*  <a asp-action="Edit" asp-route-id="@Model?.MemberId">Edit</a>
  
-    }
+    } *@
     <a asp-action="Index">Back to List</a>
 </div>
 };

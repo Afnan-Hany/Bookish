@@ -8,9 +8,9 @@
 
 <h1>Delete</h1>
 
-@if (ViewBag.UserRole == "Host" || 
+@* @if (ViewBag.UserRole == "Host" || 
     (ViewBag.UserRole == "Member" && ViewBag.MemberId.HasValue && Model.MemberId == ViewBag.MemberId.Value))
-{
+{ *@
     <h3>Are you sure you want to delete this member?</h3>
     <div>
         <h4>Member</h4>
@@ -43,7 +43,7 @@
         </dl>
 
         <form asp-action="DeleteConfirmed" method="post">
-            <input type="hidden" asp-for="MemberId" />
+            @* <input type="hidden" asp-for="MemberId" /> *@
             <input type="submit" value="Delete" class="btn btn-danger" /> |
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         </form>

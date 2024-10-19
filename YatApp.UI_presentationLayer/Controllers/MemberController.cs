@@ -34,7 +34,7 @@ namespace Library.Controllers
             return View();
         }
 
-        [Authorize]
+        //[Authorize]
         #region Index
         public async Task<IActionResult> Index(int memberId)
         {
@@ -58,7 +58,7 @@ namespace Library.Controllers
             return View("AccessDenied");
         }
         #endregion
-
+        
         #region Details
         public async Task<ActionResult> Details(int id)
         {
