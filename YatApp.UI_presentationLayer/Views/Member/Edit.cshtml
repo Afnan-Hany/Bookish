@@ -1,51 +1,4 @@
-﻿@* @model Library.Models.Member
-
-@{
-    ViewData["Title"] = "Edit";
-    var userRole = ViewBag.UserRole;
-    var memberId = ViewBag.MemberId; 
-}
-
-<h1>Edit Member</h1>
-
-@if (ViewBag.UserRole == "Member")
-{
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="MemberId" />
-        <div class="form-group">
-            <label asp-for="MemberName" class="control-label"></label>
-            <input type="hidden" asp-for="MemberName" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label asp-for="Email" class="control-label"></label>
-            <input asp-for="Email" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label asp-for="PhoneNumber" class="control-label"></label>
-            <input asp-for="PhoneNumber" class="form-control" />
-        </div>
-
-        <div class="form-group">
-        <label asp-for="Username" class="control-label"></label>
-            <input  asp-for="Username" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label asp-for="MembershipDate" class="control-label"></label>
-            <input type="hidden" asp-for="MembershipDate" type="date" class="form-control" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
-}
-else
-{
-    <h3>You do not have permission to edit this member.</h3>
-}
-
-<div>
-    <a asp-controller="Member" asp-action="Index" class="btn btn-secondary">Back to List</a>
-</div> *@
-
-@model MemberDto
+﻿@model MemberDto
 
 @{
     ViewData["Title"] = "Edit";
@@ -54,7 +7,6 @@ else
 <h1>Edit Member</h1>
 
 <p>User Role: @ViewBag.UserRole</p> 
-// <input type="hidden" asp-for="MemberId" />//return it in line 61
 @if (userRole == "Member")
 {
     <form asp-action="Edit" method="post">
