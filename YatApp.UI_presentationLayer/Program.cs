@@ -1,7 +1,9 @@
+using ApiConsume;
 using Interface;
 using Library.Data;
 using Microsoft.EntityFrameworkCore;
 using Repo;
+using YatApp.UI_PresentaionLayer.ApiConsume;
 
 namespace YatApp.UI_presentationLayer
 {
@@ -12,6 +14,8 @@ namespace YatApp.UI_presentationLayer
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            //builder.Services.AddTransient<IApiCall, ApiCallRestSharp>();
+            builder.Services.AddTransient<IApiCall, ApiCall>();
             var app = builder.Build();
             
             // Configure the HTTP request pipeline.
@@ -31,7 +35,7 @@ namespace YatApp.UI_presentationLayer
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Member}/{action=Index}/{id?}");
 
             app.Run();
         }
