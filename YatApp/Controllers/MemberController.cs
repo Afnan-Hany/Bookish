@@ -6,6 +6,7 @@ using Library.Data;
 using Library.Models;
 using Interface;
 using Dto;
+using Repo;
 
 namespace Library.Controllers;
 
@@ -42,6 +43,41 @@ public class MemberController : BaseApiController
         var res = await _unitofWork.Members.GetByIdAsync(id);
         return Ok(res);
     }
+
+
+
+    [HttpGet("GetByRoleAsync/{roleId}")]
+    public async Task<IActionResult> GetByRoleAsync(int roleId)
+    {
+        try
+        {
+            var members = await _unitofWork.Members.GetMembersByRoleAsync(roleId);
+            if (members == null || !members.Any())
+            {
+                return NotFound("No members found for this role.");
+            }
+            return Ok(members);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+
+    [HttpGet("GetMemberByUsernameAsync/{username}")]
+    public async Task<IActionResult> GetMemberByUsernameAsync(string username)
+    {
+        var member = await _unitofWork.Members.GetMemberByUsernameAsync(username);
+
+        if (member == null)
+        {
+            return NotFound(); 
+        }
+
+        return Ok(member); 
+    }
+
     #endregion
 
     #region Add
@@ -112,6 +148,8 @@ public class MemberController : BaseApiController
 
 
     #endregion
+
+
 
 
 }

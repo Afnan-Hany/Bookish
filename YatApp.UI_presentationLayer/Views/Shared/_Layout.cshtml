@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@* 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,9 +11,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">YatApp.UI_presentationLayer</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bookish</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -25,9 +26,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
+            
         </nav>
     </header>
     <div class="container">
@@ -44,6 +48,108 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>  *@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - YatApp.UI_presentationLayer</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom CSS for Sidebar -->
+    <style>
+        /* Sidebar styling */
+        .offcanvas-sidebar {
+            width: 250px;
+            background-color: #f8f9fa;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            height: 100%;
+            transition: left 0.3s ease;
+            z-index: 1050;
+        }
+
+            /* To show the sidebar */
+            .offcanvas-sidebar.show {
+                left: 0;
+            }
+
+        .sidebar-header {
+            padding: 15px;
+            font-size: 1.5em;
+            background-color: #343a40;
+            color: white;
+        }
+
+        .sidebar-link {
+            padding: 15px;
+            display: block;
+            color: #343a40;
+            text-decoration: none;
+        }
+
+            .sidebar-link:hover {
+                background-color: #ddd;
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <!-- Hamburger Menu Icon -->
+                <button class="navbar-toggler" type="button" id="sidebarToggle">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#">Bookish</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="offcanvas-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            Menu
+        </div>
+        <a class="sidebar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a href="#" class="sidebar-link">About</a>
+        <a href="#" class="sidebar-link">Categories</a>
+        <a class="sidebar-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - YatApp.UI_presentationLayer - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript to toggle the sidebar -->
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        });
+    </script>
 </body>
 </html>

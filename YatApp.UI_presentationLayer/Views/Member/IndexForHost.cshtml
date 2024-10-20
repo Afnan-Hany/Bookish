@@ -1,0 +1,37 @@
+﻿@model IEnumerable<MemberDto>
+
+<form method="get" asp-action="FilterByRole">
+    <label for="role">Select Role:</label>
+    <select id="role" name="roleId" asp-items="@(new SelectList(new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Host", Value = "1" },
+        new SelectListItem { Text = "Member", Value = "2" }
+    }, "Value", "Text"))">
+        <option value="">-- Select Role --</option>
+    </select>
+    <input type="submit" value="Filter" />
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Member Name</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.MemberName</td>
+                <td>@member.RoleId</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Add New Member</a>
+
+
+
+

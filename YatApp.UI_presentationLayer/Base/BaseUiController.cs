@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace YatApp.UI_presentationLayer.Base
 {
-    public class BaseUiController: ControllerBase
+    public class BaseUiController: Controller
     {
         protected readonly IApiCall _api;
 

@@ -50,4 +50,14 @@ public class ApiCallRestSharp : IApiCall
         var response = await _client.ExecuteAsync(request);
         return response.IsSuccessful;
     }
+
+    public Task<IEnumerable<T>> GetByRoleAsync<T>(string url, int roleId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Member> GetMemberByUserameAsync<Member>(string url, string Username)
+    {
+        throw new NotImplementedException();
+    }
 }

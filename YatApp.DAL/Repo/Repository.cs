@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System;
 using Library.Data;
 using System.Linq.Dynamic.Core;
+using Library.Models;
 namespace Repo;
 
 
@@ -43,6 +44,18 @@ public class Repository<T> : IRepository<T> where T : class
         return distinctValues;
     }
 
+    public async Task<IEnumerable<Member>> GetMembersByRoleAsync(int roleId)
+    {
+        return await _context.Members
+                             .Where(m => m.RoleId == roleId)
+                             .Include(m => m.Role)
+                             .ToListAsync();
+    }
+
+    public async Task<Member> GetMemberByUsernameAsync(string username)
+    {
+        return await _context.Members.FirstOrDefaultAsync(m => m.Username == username); 
+    }
     #endregion
 
     #region Find

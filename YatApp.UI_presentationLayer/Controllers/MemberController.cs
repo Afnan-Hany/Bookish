@@ -8,237 +8,235 @@ using System.Collections.Generic;
 using Dto;
 using YatApp.UI_presentationLayer.Base;
 using Interface;
+using Humanizer;
 
-//namespace Library.Controllers
-//{
-//    public class MemberController : BaseUiController
-//    {
-//        public MemberController(IApiCall api) : base(api)
-//        {
-//        }
+namespace Library.Controllers
+{
+    public class MemberController : BaseUiController
+    {
+        public MemberController(IApiCall api) : base(api)
+        {
+        }
 
-//        public IActionResult SomeAction()
-//        {
-//            var currentUserRole = HttpContext.Session.GetString("UserRole");
-//            var currentUserId = HttpContext.Session.GetInt32("MemberId");
 
-//            if (currentUserRole == null || currentUserId == null)
-//            {
-//                return RedirectToAction("Login", "Account");
-//            }
+        #region IndexForHost
+        public async Task<IActionResult> IndexForHost(int memberId)
+        {
+            var members = await _api.GetByRoleAsync<Member>("members/GetByRoleAsync", 1);
+            return View("IndexForHost", members);  
+        }
+        #endregion
 
-//            ViewBag.UserRole = currentUserRole;
-//            ViewBag.MemberId = currentUserId;
+        #region IndexForMember
+        public async Task<IActionResult> IndexForMember(int memberId)
+        {
+            var members = await _api.GetByIdAsync<Member>("members/GetByIdAsync",memberId);
+            if(members == null)
+            {
+                return NotFound("Member Not Found.");
+            }
+            return RedirectToAction("IndexForMember");
+        } 
+        #endregion
 
-//            return View();
-//        }
+        #region Details
+        public async Task<ActionResult> Details(int id)
+        {
+            var member = await _api.GetByIdAsync<Member>("members", id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+            return View(member);
+        }
+        #endregion
 
-//        //[Authorize]
-//        #region Index
-//        public async Task<IActionResult> Index(int memberId)
-//        {
-//            var member = await _api.GetByIdAsync<Member>("members", memberId);
-//            if (member == null)
-//            {
-//                return NotFound();  // If no member found
-//            }
+        #region Create
+        public async Task<ActionResult> Create()
+        {
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction(nameof(Login));
+            }
 
-//            if (member.Role.RoleName == "Host")
-//            {
-//                var members = await _api.GetAllAsync<Member>("members");
-//                return View("Index", members);  // Pass the list of members to the view
-//            }
-//            else if (member.Role.RoleName == "Member")
-//            {
-//                var singleMemberList = new List<Member> { member };
-//                return View("Index", singleMemberList);  // Pass as IEnumerable<Member>
-//            }
+            if (!await IsUserHost())
+            {
+                return View("AccessDenied");
+            }
 
-//            return View("AccessDenied");
-//        }
-//        #endregion
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(Member member)
+        {
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            if (!await IsUserHost())
+            {
+                return View("AccessDenied");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var hostRole = await _api.GetAllAsync<Role>("roles");
+                var hostRoleObj = hostRole.FirstOrDefault(r => r.RoleName == "Host");
+
+                if (hostRoleObj != null)
+                {
+                    member.RoleId = hostRoleObj.RoleId;
+                }
+
+                await _api.CreateAsync("members", member);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(member);
+        }
+
+        private bool IsUserLoggedIn()
+        {
+            var memberId = HttpContext.Session.GetString("MemberId");
+            return !string.IsNullOrEmpty(memberId);
+        }
+
+        private async Task<bool> IsUserHost()
+        {
+            var memberId = int.Parse(HttpContext.Session.GetString("MemberId"));
+            var currentMember = await _api.GetByIdAsync<Member>("members", memberId);
+
+            return currentMember != null && currentMember.Role.RoleName == "Host";
+        }
+        #endregion
+
+        #region Edit
+        public async Task<ActionResult> Edit(int id)
+        {
+            var member = await _api.GetByIdAsync<Member>("members", id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+            return View(member);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int id, Member member)
+        {
+            if (id != member.MemberId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _api.UpdateAsync("members", id, member);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(member);
+        }
+        #endregion
+
+        #region Delete
+        public async Task<ActionResult> Delete(int id)
+        {
+            var member = await _api.GetByIdAsync<Member>("members", id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+            return View(member);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            var member = await _api.GetByIdAsync<Member>("members", id);
+            if (member != null)
+            {
+                await _api.DeleteAsync<Member>("members", id);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+
+        #region Login
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(MemberDto dto)
+        {
+            // Validate the input
+            if (dto == null || string.IsNullOrEmpty(dto.Username) || string.IsNullOrEmpty(dto.Password))
+            {
+                return BadRequest("Username and password are required.");
+            }
+
+            var member = await _api.GetMemberByUserameAsync<MemberDto>("Member/GetMemberByUsernameAsync", dto.Username);
+
+            if (member == null)
+            {
+                return NotFound("Member not found");
+            }
+
+
+            if (VerifyPassword(dto.Password, member.Password)) 
+            {
+                
+                if (member.RoleId == 1)
+                {
+                    return RedirectToAction("IndexForHost");
+                }
+                else if (member.RoleId == 2)
+                {
+                    return RedirectToAction("IndexForMember");
+                }
+            }
+
+            return View("AccessDenied");
+        }
+
         
-//        #region Details
-//        public async Task<ActionResult> Details(int id)
-//        {
-//            var member = await _api.GetByIdAsync<Member>("members", id);
-//            if (member == null)
-//            {
-//                return NotFound();
-//            }
-//            return View(member);
-//        }
-//        #endregion
+        private bool VerifyPassword(string inputPassword, string storedPassword)
+        {
+           
+            return inputPassword == storedPassword; 
+        }
+        #endregion
 
-//        #region Create
-//        public async Task<ActionResult> Create()
-//        {
-//            if (!IsUserLoggedIn())
-//            {
-//                return RedirectToAction(nameof(Login));
-//            }
+        #region Register
+        public IActionResult Register()
+        {
+            return View();
+        }
 
-//            if (!await IsUserHost())
-//            {
-//                return View("AccessDenied");
-//            }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(MemberDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                dto.RoleId = 2;
 
-//            return View();
-//        }
+                await _api.CreateAsync("members", dto);
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<ActionResult> Create(Member member)
-//        {
-//            if (!IsUserLoggedIn())
-//            {
-//                return RedirectToAction(nameof(Login));
-//            }
+                HttpContext.Session.SetString("Username", dto.MemberName);
 
-//            if (!await IsUserHost())
-//            {
-//                return View("AccessDenied");
-//            }
+                return RedirectToAction("Index","Home");
+            }
 
-//            if (ModelState.IsValid)
-//            {
-//                var hostRole = await _api.GetAllAsync<Role>("roles");
-//                var hostRoleObj = hostRole.FirstOrDefault(r => r.RoleName == "Host");
-
-//                if (hostRoleObj != null)
-//                {
-//                    member.RoleId = hostRoleObj.RoleId;
-//                }
-
-//                await _api.CreateAsync("members", member);
-//                return RedirectToAction(nameof(Index));
-//            }
-
-//            return View(member);
-//        }
-
-//        private bool IsUserLoggedIn()
-//        {
-//            var memberId = HttpContext.Session.GetString("MemberId");
-//            return !string.IsNullOrEmpty(memberId);
-//        }
-
-//        private async Task<bool> IsUserHost()
-//        {
-//            var memberId = int.Parse(HttpContext.Session.GetString("MemberId"));
-//            var currentMember = await _api.GetByIdAsync<Member>("members", memberId);
-
-//            return currentMember != null && currentMember.Role.RoleName == "Host";
-//        }
-//        #endregion
-
-//        #region Edit
-//        public async Task<ActionResult> Edit(int id)
-//        {
-//            var member = await _api.GetByIdAsync<Member>("members", id);
-//            if (member == null)
-//            {
-//                return NotFound();
-//            }
-//            return View(member);
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<ActionResult> Edit(int id, Member member)
-//        {
-//            if (id != member.MemberId)
-//            {
-//                return NotFound();
-//            }
-
-//            if (ModelState.IsValid)
-//            {
-//                await _api.UpdateAsync("members", id, member);
-//                return RedirectToAction(nameof(Index));
-//            }
-//            return View(member);
-//        }
-//        #endregion
-
-//        #region Delete
-//        public async Task<ActionResult> Delete(int id)
-//        {
-//            var member = await _api.GetByIdAsync<Member>("members", id);
-//            if (member == null)
-//            {
-//                return NotFound();
-//            }
-//            return View(member);
-//        }
-
-//        [HttpPost, ActionName("Delete")]
-//        [ValidateAntiForgeryToken]
-//        public async Task<ActionResult> DeleteConfirmed(int id)
-//        {
-//            var member = await _api.GetByIdAsync<Member>("members", id);
-//            if (member != null)
-//            {
-//                await _api.DeleteAsync<Member>("members", id); 
-//            }
-//            return RedirectToAction(nameof(Index));
-//        }
-//        #endregion
-
-//        #region Login
-//        public ActionResult Login()
-//        {
-//            return View();
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<ActionResult> Login(string username, string password)
-//        {
-//            var members = await _api.GetAllAsync<Member>("members");
-//            var member = members.FirstOrDefault(m => m.Username == username && m.Password == password);
-
-//            if (member != null)
-//            {
-//                HttpContext.Session.SetString("MemberId", member.MemberId.ToString());
-//                HttpContext.Session.SetString("Username", member.Username);
-//                return RedirectToAction(nameof(Index), new { memberId = member.MemberId });
-//            }
-
-//            ModelState.AddModelError("", "Invalid login attempt.");
-//            return View();
-//        }
-//        #endregion
-
-//        #region Register
-//        public IActionResult Register()
-//        {
-//            return View();
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Register(Member model)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                var memberRole = await _api.GetAllAsync<Role>("roles");
-//                var memberRoleObj = memberRole.FirstOrDefault(r => r.RoleName == "Member");
-//                if (memberRoleObj != null)
-//                {
-//                    model.RoleId = memberRoleObj.RoleId;
-//                }
-
-//                await _api.CreateAsync("members", model);
-
-//                HttpContext.Session.SetString("MemberId", model.MemberId.ToString());
-//                HttpContext.Session.SetString("Username", model.MemberName);
-
-//                return RedirectToAction(nameof(Index), new { memberId = model.MemberId });
-//            }
-
-//            return View(model);
-//        }
-//        #endregion
-//    }
-//}
+            return RedirectToAction("IndexForMember");
+        }
+        #endregion
+    }
+}

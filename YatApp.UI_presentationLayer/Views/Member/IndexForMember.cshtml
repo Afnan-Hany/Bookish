@@ -1,0 +1,60 @@
+﻿@model MemberDto ;
+
+@{
+    ViewBag.Title = "Member Details";
+}
+
+<h2>Member Details</h2>
+
+<div class="member-details">
+    <h3>@Model.Username</h3>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Joined On:</strong> @Model.MembershipDate.ToString("dd/MM/yyyy")</p> 
+    <p><strong>PhoneNumber:</strong> @Model.PhoneNumber</p>
+    <p><strong>MemberName:</strong> @Model.MemberName</p>
+    <p><strong>Password:</strong> @Model.Password</p>
+</div>
+
+<div class="member-actions">
+    <a href="@Url.Action("Edit", "Members")" class="btn btn-primary">Edit</a>
+    <a href="@Url.Action("Index", "Book")" class="btn btn-secondary">Home</a>
+</div>
+
+<style>
+    .member-details {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .member-details h3 {
+        margin: 0;
+    }
+
+    .member-actions {
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+</style>

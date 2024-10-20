@@ -58,3 +58,75 @@ body {
     background-repeat: no-repeat;
     opacity: 0.5;
 }
+
+.navbar-collapse {
+    display: none;
+}
+
+    .navbar-collapse.show {
+        display: block;
+    }
+
+.navbar-toggler {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding-left: 0;
+}
+
+.nav-item {
+    margin: 5px 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: black;
+}
+
+.icon-hamburger {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 768px) {
+    .navbar-collapse {
+        display: none;
+    }
+
+    .navbar-toggler {
+        display: block;
+    }
+
+    .navbar-collapse.show {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .navbar-collapse {
+        display: block;
+    }
+}
+/* Basic styling for the navbar */
+.navbar {
+    background-color: #f8f9fa;
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+/* Optional - adjust size of the hamburger icon */
+.navbar-toggler-icon {
+    width: 30px;
+    height: 30px;
+}
