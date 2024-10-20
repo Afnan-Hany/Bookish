@@ -55,7 +55,11 @@
 </html>  *@
 
 
-<!DOCTYPE html>
+
+
+
+
+@* <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -70,13 +74,15 @@
         /* Sidebar styling */
         .offcanvas-sidebar {
             width: 250px;
-            background-color: #f8f9fa;
+            background-color: #343a40;
             position: fixed;
             top: 0;
             left: -250px;
             height: 100%;
             transition: left 0.3s ease;
             z-index: 1050;
+            padding-top: 60px;
+            color: white;
         }
 
             /* To show the sidebar */
@@ -111,7 +117,8 @@
                 <button class="navbar-toggler" type="button" id="sidebarToggle">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a class="navbar-brand" href="#">Bookish</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bookish</a>
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>
@@ -151,5 +158,133 @@
             sidebar.classList.toggle('show');
         });
     </script>
+</body>
+</html> *@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookish</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        /* Custom styles for the sidebar */
+        .offcanvas {
+            position: fixed;
+            top: 60px; /* يبدأ تحت الـ header */
+            left: -300px; /* خارج الشاشة في البداية */
+            width: 300px;
+            height: calc(100% - 60px); /* الارتفاع يعتمد على حجم الشاشة */
+            color: antiquewhite;
+            transition: left 0.5s ease; /* حركة انتقال سلسة */
+            padding-top: 20px; /* تباعد داخلي */
+            z-index: 1000; /* تضمن أن الـ sidebar فوق المحتوى الآخر */
+            background-image: url("/Images/Bookisk30.jpeg"); /* استخدم مسارًا نسبيًا */
+            background-size: cover; /* يجعل الصورة تغطي المساحة بالكامل */
+            background-position: center; /* يجعل الصورة متمركزة */
+            background-repeat: no-repeat; /* عدم تكرار الصورة */
+        }
+
+
+
+            .offcanvas.show {
+                left:0;
+            }
+
+            .offcanvas ul {
+                list-style: none;
+                padding-left: 0;
+            }
+
+                .offcanvas ul li a {
+                    color: white;
+                    padding: 15px;
+                    text-decoration: none;
+                    display: block;
+                }
+
+                    .offcanvas ul li a:hover {
+                        background-color: burlywood;
+                    }
+
+        .hamburger {
+            font-size: 30px; /* يمكنك تعديل حجم الأيقونة كما تشاء */
+            background: none; /* إزالة الخلفية */
+            border: none; /* إزالة الحدود */
+            cursor: pointer; /* تغيير المؤشر عند المرور */
+            color: burlywood; /* تغيير لون الأيقونة */
+            padding: 10px; /* إضافة تباعد */
+        }
+
+        .header-image {
+            width: 50px; /* يمكنك تغيير الحجم حسب الحاجة */
+            height: auto; /* الحفاظ على النسبة */
+            margin-right:auto;
+            
+      
+            
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                
+                <!-- Hamburger Menu Icon -->
+                <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+                <img src="~/Images/Bookish28.jpeg" alt="Logo" class="header-image">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bookish</a>
+            </div>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <partial name="_LoginPartial" />
+            </div>
+    
+        
+     </header>
+    <!-- Sidebar (Offcanvas) -->
+    <div id="mySidebar" class="offcanvas">
+        <ul>
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            <!-- Your main content here -->
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted" style="position: relative; text-align: center;">
+        @* <img src="~/Images/Bookish Logo5B.jpeg" alt="Bookish Logo" style="width: 1550px; height: 200px; opacity: 0.8; position: absolute; top: 0; left: 0; z-index: -1;"> *@
+        <div class="container" style="position: relative; z-index: 1;">
+            &copy; 2024 - Example Footer - <a href="#">Privacy</a>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS to toggle the sidebar -->
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("mySidebar");
+            sidebar.classList.toggle("show");
+        }
+    </script>
+
 </body>
 </html>
