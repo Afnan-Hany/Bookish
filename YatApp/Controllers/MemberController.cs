@@ -59,7 +59,7 @@ public class MemberController : BaseApiController
             return Ok(members);
         }
         catch (Exception ex)
-        {
+        { 
             return StatusCode(500, "Internal server error");
         }
     }

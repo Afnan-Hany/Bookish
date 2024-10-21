@@ -9,6 +9,7 @@ using Dto;
 using YatApp.UI_presentationLayer.Base;
 using Interface;
 using Humanizer;
+using Newtonsoft.Json;
 
 namespace Library.Controllers
 {
@@ -20,17 +21,17 @@ namespace Library.Controllers
 
 
         #region IndexForHost
-        public async Task<IActionResult> IndexForHost(int memberId)
+        public async Task<IActionResult> IndexForHost(int RoleId)
         {
-            var members = await _api.GetByRoleAsync<Member>("members/GetByRoleAsync", 1);
+            var members = await _api.GetByRoleAsync<Member>("Members/GetByRoleAsync", 1);
             return View("IndexForHost", members);  
         }
         #endregion
 
         #region IndexForMember
-        public async Task<IActionResult> IndexForMember(int memberId)
+        public async Task<IActionResult> IndexForMember(int RoleId)
         {
-            var members = await _api.GetByIdAsync<Member>("members/GetByIdAsync",memberId);
+            var members = await _api.GetByIdAsync<Member>("Members/GetByIdAsync",2);
             if(members == null)
             {
                 return NotFound("Member Not Found.");
@@ -42,7 +43,7 @@ namespace Library.Controllers
         #region Details
         public async Task<ActionResult> Details(int id)
         {
-            var member = await _api.GetByIdAsync<Member>("members", id);
+            var member = await _api.GetByIdAsync<Member>("Members/GetByIdAsync",id);
             if (member == null)
             {
                 return NotFound();
@@ -69,7 +70,7 @@ namespace Library.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Member member)
+        public async Task<ActionResult> Create(MemberDto dto)
         {
             if (!IsUserLoggedIn())
             {
@@ -88,14 +89,14 @@ namespace Library.Controllers
 
                 if (hostRoleObj != null)
                 {
-                    member.RoleId = hostRoleObj.RoleId;
+                    dto.RoleId = hostRoleObj.RoleId;
                 }
 
-                await _api.CreateAsync("members", member);
+                await _api.CreateAsync("Members/CreateAsync", dto);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(member);
+            return View(dto);
         }
 
         private bool IsUserLoggedIn()

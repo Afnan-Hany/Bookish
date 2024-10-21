@@ -1,6 +1,8 @@
+using System.Configuration;
 using ApiConsume;
 using Interface;
 using Library.Data;
+using Library.Models;
 using Microsoft.EntityFrameworkCore;
 using Repo;
 using YatApp.UI_PresentaionLayer.ApiConsume;
@@ -13,7 +15,14 @@ namespace YatApp.UI_presentationLayer
         {
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
+            var con = builder.Configuration.GetConnectionString("con");
+
+            // Add services to the container.
+            builder.Services.AddDbContext<BookishAppDbContext>(options =>
+                options.UseSqlServer(con, sqlOptions =>
+                    sqlOptions.EnableRetryOnFailure()));
             builder.Services.AddControllersWithViews();
+
             //builder.Services.AddTransient<IApiCall, ApiCallRestSharp>();
             builder.Services.AddTransient<IApiCall, ApiCall>();
             var app = builder.Build();
